@@ -32,11 +32,27 @@
 
                 <!-- Collapsed navigation -->
                 <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
                     <a class="navbar-brand" href=".">School_Category</a>
                 </div>
 
                 <!-- Expanded navigation -->
                 <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="active">
+                                <a href=".">Documentation</a>
+                            </li>
+                            <li >
+                                <a href="scenario.md">Scénario d'utilisation</a>
+                            </li>
+                        </ul>
 
                     <ul class="nav navbar-nav navbar-right">
                         <li>
@@ -52,28 +68,97 @@
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#odoo-school-category">Odoo - School Category</a></li>
-            <li><a href="#commands">Commands</a></li>
-            <li><a href="#project-layout">Project layout</a></li>
+        <li class="main active"><a href="#presentation">Présentation</a></li>
+        <li class="main "><a href="#utilisation-du-module">Utilisation du module</a></li>
+        <li class="main "><a href="#maintenance-du-module">Maintenance du module</a></li>
+            <li><a href="#connexion-au-serveur-odoo">Connexion au serveur Odoo</a></li>
+            <li><a href="#architecture-du-module">Architecture du module</a></li>
+            <li><a href="#modification-dun-modele">Modification d'un modèle</a></li>
+            <li><a href="#modification-dune-vue">Modification d'une vue</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="odoo-school-category">Odoo - School Category</h1>
-<p>For full documentation visit <a href="https://mkdocs.org">mkdocs.org</a>.</p>
-<h2 id="commands">Commands</h2>
-<ul>
-<li><code>mkdocs new [dir-name]</code> - Create a new project.</li>
-<li><code>mkdocs serve</code> - Start the live-reloading docs server.</li>
-<li><code>mkdocs build</code> - Build the documentation site.</li>
-<li><code>mkdocs help</code> - Print this help message.</li>
-</ul>
-<h2 id="project-layout">Project layout</h2>
-<pre><code>mkdocs.yml    # The configuration file.
-docs/
-    index.md  # The documentation homepage.
-    ...       # Other markdown pages, images and other files.
-</code></pre></div>
+<h2 id="presentation">Présentation</h2>
+<p>L'entreprise SchoolInc vous présente son nouvel addon pour l'ERP Odoo : 
+<b>"School Category"</b>. Il permet, à la création d'une nouvelle fourniture
+scolaire, de lui attribuer une "Ecole préférentielle" afin de faciliter 
+l'élaboration et la lecture de futures commandes. Cette information est ainsi visible 
+sur tous les rapports en PDF des devis et des factures (pour d'éventuelles impressions).</p>
+<p><img alt="Alt text" src="/img1.jpg" title="Création d'un article" /></p>
+<h2 id="utilisation-du-module">Utilisation du module</h2>
+<p>Rendez-vous sur le site suivant : <a href="http://46.4.237.53:10069/">Odoo SchoolInc</a><br/>
+Connectez-vous avec les identifiants d'administrateur.</p>
+<p>En cliquant sur le menu déroulant dans le coin supérieur gauche, 
+choisissez le module <em>"Ventes"</em>. Cliquez enfin sur l'onglet 
+<em>"Articles"</em> pour afficher la page de création d'articles.
+<br/>
+Ici, vous pourrez choisir l'<b>Ecole préférentielle</b> qui correspond le mieux 
+à votre nouvel article (le choix d'une catégorie est obligatoire).</p>
+<p>Cette catégorie figurera automatiquement sur les PDF de tous les devis 
+et toutes les factures  comportant de tels articles. Vous trouverez plus 
+d'informations et d'exemples à ce sujet dans la section 
+<a href="/scenario.md">Scénario d'utilisation</a> de cette documentation.</p>
+<h2 id="maintenance-du-module">Maintenance du module</h2>
+<h3 id="connexion-au-serveur-odoo">Connexion au serveur Odoo</h3>
+<p>Ouvrez un invité de commandes sur Windows ou un terminal sur Linux.
+Assurez-vous que <code>ssh</code> soit installé sur votre machine et entrez la commande suivante :</p>
+<p><code>ssh gr2@46.4.237.53</code></p>
+<p>Validez le mot de passe. Vous êtes à present connecté au serveur. Si 
+le site n'est pas en ligne, démarrez-le avec la commande suivante :</p>
+<p><code>~/odoo/odoo-bin  --addons-path="~/odoo/addons" -d SchoolInc -i school_category</code></p>
+<p>Pour accéder au répertoire de l'addon, écrivez ceci :</p>
+<p><code>cd odoo/addons/school_category</code></p>
+<p>Le contenu de ce répertoire est aussi disponible sur le 
+<a href="https://github.com/adrien852/odoo_school_category">github du projet</a>.</p>
+<h3 id="architecture-du-module">Architecture du module</h3>
+<p>Cet addon a pour but de modifier des modules existants. L'architecture et 
+le code se base donc sur la localisation et le ciblage des différents éléments à 
+modifier.</p>
+<pre><code>__init__.py                         # Import du répertoire models
+__manifest__.py                     # Dépendances et import des views
+models/                             # Répertoire de modification de base de données
+    __init__.py                     # Import des models d'origine à modifier
+    product_template.py             # Insertion du champ "school_category" dans le modèle "product_template"
+views/                              # Répertoire de modification des vues
+    report_invoice_document.xml     # Insertion du champ "Ecole préférentielle" dans le report "facture"
+    report_saleorder_document.xml   # Insertion du champ "Ecole préférentielle" dans le report "devis"
+    school_category.xml             # Insertion du champ "Ecole préférentielle" dans le formulaire de création
+reports/
+    school_category_report.xml      #Création d'un report sur le pourcentage d'occurence de chaque catégorie
+</code></pre>
+<p>(Le fichier <code>reports/school_category_report.xml</code> n'est pas fonctionnel)</p>
+<h3 id="modification-dun-modele">Modification d'un modèle</h3>
+<p>Ci-dessous le code de <code>product_template.py</code></p>
+<pre><code>from odoo import fields, models
+
+class ProductTemplate(models.Model):
+    _inherit = 'product.template'
+    school_category = fields.Selection([('m','Maternelle'), ('p','Primaire'),('c','College'),
+                        ('l','Lycee'),('s','Superieur')],'Ecole préférentielle', required=True)
+</code></pre>
+<p>Le nom de la classe doit être celui de la classe d'origine. On précise également 
+le nom du modèle d'origine dans la variable <code>_inherit</code>.<br/>
+On déclare ensuite le nouveau champ en précisant son type et ses différentes options.</p>
+<h3 id="modification-dune-vue">Modification d'une vue</h3>
+<p>On peut prendre comme exemple le code de <code>school_category.xml</code></p>
+<pre><code>&lt;?xml version="1.0"?&gt; 
+&lt;odoo&gt;  
+    &lt;record id="product_template_form_view_extend" model="ir.ui.view"&gt;    
+        &lt;field name="name"&gt;product.template.schoolcat&lt;/field&gt;
+        &lt;field name="model"&gt;product.template&lt;/field&gt;    
+        &lt;field name="inherit_id" ref="product.product_template_form_view"/&gt;    
+        &lt;field name="arch" type="xml"&gt;
+            &lt;xpath expr="//field[@name='categ_id']" position="after"&gt;
+                        &lt;field name="school_category"/&gt;
+                &lt;/xpath&gt;
+        &lt;/field&gt;
+    &lt;/record&gt; 
+&lt;/odoo&gt;
+</code></pre>
+<p>Après l'attribution d'un ID et d'un nom à la nouvelle vue, on indique le modèle utilisé 
+pour l'insertion de notre champ et l'ID de la vue "mère" à modifier. On utilise 
+alors une balise <code>xpath</code> pour cibler précisément l'emplacement du nouveau champ.</p></div>
         </div>
 
         <footer class="col-md-12">
@@ -156,5 +241,5 @@ docs/
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2019-03-24 12:02:02
+Build Date UTC : 2019-03-24 15:18:38
 -->
