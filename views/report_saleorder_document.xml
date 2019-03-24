@@ -1,0 +1,15 @@
+<?xml version="1.0"?>  
+<odoo>
+	<template id="report_saleorder_extend"
+	name="Extended Sale Report"
+	inherit_id="sale.report_saleorder_document">
+		<xpath expr="//th[hasclass('text-left')]" position="after">
+			<th class="text-right">Ecole préférentielle</th>
+		</xpath>
+		<xpath expr="//span[@t-field='line.name']" position="after">
+			<td class="text-right">
+                    		<span t-field="line.product_id.school_category"/>
+                	</td>
+		</xpath>
+	</template>
+</odoo>
